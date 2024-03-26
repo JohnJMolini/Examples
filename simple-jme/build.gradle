@@ -7,10 +7,17 @@ mainClassName='mygame.Main'
 
 repositories {
 	mavenLocal()
+	mavenCentral()
     jcenter()
 }
 
-ext.jmeVersion = "[3.1,)" 
+java {
+    sourceCompatibility = '17'
+    targetCompatibility = '17'
+}
+
+ext.jmeVersion = '3.7.0-alpha3.1'
+
 
 project(":simple-jme-assets") {
     apply plugin: 'java'
@@ -31,11 +38,11 @@ project(":simple-jme-assets") {
 
 dependencies {
  
-    compile "org.jmonkeyengine:jme3-core:$jmeVersion"
-    compile "org.jmonkeyengine:jme3-desktop:$jmeVersion"
-    compile "org.jmonkeyengine:jme3-lwjgl:$jmeVersion"
+    implementation "org.jmonkeyengine:jme3-core:$jmeVersion"
+    implementation "org.jmonkeyengine:jme3-desktop:$jmeVersion"
+    implementation "org.jmonkeyengine:jme3-lwjgl:$jmeVersion"
     
-    runtime project(':simple-jme-assets')    
+    runtimeOnly project(':simple-jme-assets')    
 }
 
 task createDirs {

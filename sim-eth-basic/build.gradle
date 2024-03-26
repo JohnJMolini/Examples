@@ -6,11 +6,12 @@ apply plugin: 'idea'
 mainClassName='example.Main'
 
 repositories {
+  	mavenCentral()
     mavenLocal()
     jcenter()
 }
 
-ext.jmeVersion = "[3.3,)" 
+ext.jmeVersion = '3.7.0-alpha3.1'
 
 project(":sim-eth-basic-assets") {
     apply plugin: 'java'
@@ -32,32 +33,36 @@ project(":sim-eth-basic-assets") {
 dependencies {
  
     // Need at least basic JME
-    compile "org.jmonkeyengine:jme3-core:$jmeVersion"
-    compile "org.jmonkeyengine:jme3-desktop:$jmeVersion"
-    compile "org.jmonkeyengine:jme3-lwjgl:$jmeVersion"
-    //Had to add this to get networking to update. Might be gradle bug from this version.
-    compile("org.jmonkeyengine:jme3-networking:$jmeVersion") {
-        force = true;
-    } 
- 
+   implementation 'org.jmonkeyengine:jme3-core:' + jmeVersion
+    implementation 'org.jmonkeyengine:jme3-desktop:' + jmeVersion
+    runtimeOnly 'org.jmonkeyengine:jme3-jogg:' + jmeVersion
+    runtimeOnly 'org.jmonkeyengine:jme3-plugins:' + jmeVersion
+	runtimeOnly 'org.jmonkeyengine:jme3-testdata:' + jmeVersion
+
+    implementation 'org.jmonkeyengine:jme3-jbullet:' + jmeVersion
+    runtimeOnly 'org.jmonkeyengine:jme3-lwjgl3:' + jmeVersion
+	
+	
     // We definitely want a UI
-    compile "com.simsilica:lemur:1.13.0"
-    compile "com.simsilica:lemur-proto:1.11.0"
+    implementation "com.simsilica:lemur:1.13.0"
+    implementation "com.simsilica:lemur-proto:1.13.0"
 
     // And our base code for sim-etheral, SiO2, etc.
     // (many of these need to be built locally and 'gradle install'ed as of this writing)
-    compile "com.simsilica:sio2:[1.0,)"
-    compile "com.simsilica:sim-math:[1.0,)"
-    compile "com.simsilica:sim-ethereal:[1.0,)"  
+    implementation "com.simsilica:sio2:[1.0,)"
+    implementation "com.simsilica:sim-math:[1.0,)"
+    implementation "com.simsilica:sim-ethereal:[1.0,)"  
 
     // Standard utility stuff
-    compile 'com.google.guava:guava:19.0'
-    compile 'org.slf4j:slf4j-api:1.7.13'
-    runtime 'org.apache.logging.log4j:log4j-slf4j-impl:2.5'
+    implementation 'com.google.guava:guava:19.0'
+    implementation 'org.slf4j:slf4j-api:1.7.13'
+    runtimeOnly 'org.apache.logging.log4j:log4j-api:2.15.0'
+    runtimeOnly 'org.apache.logging.log4j:log4j-core:2.15.0'
+    runtimeOnly 'org.apache.logging.log4j:log4j-slf4j-impl:2.15.0'
     
-    runtime project(':sim-eth-basic-assets')    
+    runtimeOnly project(':sim-eth-basic-assets')    
 }
-
+/*
 task runServer(type: JavaExec) {
     classpath sourceSets.main.runtimeClasspath
     main = "example.net.server.GameServer"
@@ -73,11 +78,11 @@ task serverStartScript(type: CreateStartScripts) {
     classpath = jar.outputs.files + project.configurations.runtime
     defaultJvmOpts = ['-Dlog4j.configurationFile=server-log4j2.xml']
 }
-
+*/
 /*applicationDistribution.into("bin") {
     from(serverStartScript)
     fileMode = 0755
-}*/
+}
 
 // I think this is ultimately clearer than the above
 distributions {
@@ -88,7 +93,7 @@ distributions {
             }
         }
     }
-}
+}*/
 
 // Either way we end up with dupes if we don't do this
 distZip {
